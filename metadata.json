@@ -1,0 +1,8 @@
+{
+  "name": "NOVA - Free Campaign Promotion Platform",
+  "description": "A high-performance campaign management platform with neon aesthetics, providing unlimited free promotion tools, AI-driven targeting suggestions, and real-time analytics.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
