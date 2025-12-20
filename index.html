@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,6 +48,16 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
+    <!-- Babel for runtime transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script>
+      // Shim process.env for browser compatibility with Netlify environment variables
+      window.process = {
+        env: {
+          API_KEY: undefined // This will be replaced if using a build tool or can be set via window.process.env.API_KEY
+        }
+      };
+    </script>
 <script type="importmap">
 {
   "imports": {
@@ -64,5 +73,7 @@
 </head>
 <body>
     <div id="root"></div>
+    <!-- Entry point for the application using Babel -->
+    <script type="text/babel" data-presets="react,typescript" data-type="module" src="index.tsx"></script>
 </body>
 </html>
