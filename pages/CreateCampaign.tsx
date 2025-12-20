@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { useAppStore } from '../store';
-import { CampaignObjective, CampaignPlatform, CampaignMode, CampaignStatus } from '../types';
-import { Sparkles, ArrowRight, Target, Layout, Radio, Globe, CheckCircle2 } from 'lucide-react';
+import { CampaignObjective, CampaignPlatform, CampaignMode, CampaignStatus, Campaign } from '../types';
+import { Sparkles, ArrowRight, Target, Layout, Radio, Globe, CheckCircle2, Clock } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
 
 export const CreateCampaign: React.FC = () => {
@@ -16,6 +16,8 @@ export const CreateCampaign: React.FC = () => {
     platform: CampaignPlatform.TIKTOK,
     mediaUrl: '',
     targetViews: 1000,
+    durationValue: 24,
+    durationUnit: 'Hours' as 'Hours' | 'Days',
     mode: CampaignMode.PROMOTE_SUGGEST,
     ageRange: '18-24',
     gender: 'All',
@@ -46,14 +48,16 @@ export const CreateCampaign: React.FC = () => {
     e.preventDefault();
     if (!user) return;
 
-    const newCampaign = {
+    const newCampaign: Campaign = {
       id: Math.random().toString(36).substr(2, 9),
       userId: user.id,
       name: formData.name,
-      objective: CampaignObjective.VIEWS, // Default to views if none provided
+      objective: formData.objective,
       platform: formData.platform,
       mediaUrl: formData.mediaUrl,
       targetViews: formData.targetViews,
+      durationValue: formData.durationValue,
+      durationUnit: formData.durationUnit,
       mode: formData.mode,
       targeting: {
         ageRange: formData.ageRange,
@@ -111,26 +115,27 @@ export const CreateCampaign: React.FC = () => {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Objective</label>
-              <select 
-                value={formData.objective}
-                onChange={e => setFormData({...formData, objective: e.target.value as CampaignObjective})}
-                className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all"
-              >
-                {Object.values(CampaignObjective).map(obj => <option key={obj} value={obj}>{obj}</option>)}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Platform</label>
-              <select 
-                value={formData.platform}
-                onChange={e => setFormData({...formData, platform: e.target.value as CampaignPlatform})}
-                className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all"
-              >
-                {Object.values(CampaignPlatform).map(p => <option key={p} value={p}>{p}</option>)}
-              </select>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Objective</label>
+                <select 
+                  value={formData.objective}
+                  onChange={e => setFormData({...formData, objective: e.target.value as CampaignObjective})}
+                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all"
+                >
+                  {Object.values(CampaignObjective).map(obj => <option key={obj} value={obj}>{obj}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Platform</label>
+                <select 
+                  value={formData.platform}
+                  onChange={e => setFormData({...formData, platform: e.target.value as CampaignPlatform})}
+                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all"
+                >
+                  {Object.values(CampaignPlatform).map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
             </div>
 
             <div>
@@ -144,6 +149,39 @@ export const CreateCampaign: React.FC = () => {
               />
             </div>
 
+            <div className="pt-4 border-t border-white/5">
+              <div className="flex items-center space-x-2 text-purple-400 mb-4">
+                <Clock size={18} />
+                <span className="font-bold text-sm tracking-widest uppercase">Time Configuration</span>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-grow">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Duration Value</label>
+                  <input 
+                    required
+                    type="number"
+                    min="1"
+                    value={formData.durationValue}
+                    onChange={e => setFormData({...formData, durationValue: parseInt(e.target.value) || 1})}
+                    className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all"
+                    placeholder="24"
+                  />
+                </div>
+                <div className="w-32">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Unit</label>
+                  <select 
+                    value={formData.durationUnit}
+                    onChange={e => setFormData({...formData, durationUnit: e.target.value as 'Hours' | 'Days'})}
+                    className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all"
+                  >
+                    <option value="Hours">Hours</option>
+                    <option value="Days">Days</option>
+                  </select>
+                </div>
+              </div>
+              <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-tighter">Set the timeframe for campaign completion.</p>
+            </div>
+
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Desired Views</label>
               <input 
@@ -155,7 +193,6 @@ export const CreateCampaign: React.FC = () => {
                 className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-all"
                 placeholder="Enter number of views"
               />
-              <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-tighter">Enter the exact count you wish to achieve organically.</p>
             </div>
           </div>
 

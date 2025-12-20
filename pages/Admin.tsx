@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../store';
 import { CampaignStatus } from '../types';
-import { Shield, Users, Search, MoreVertical, CheckCircle, XCircle, PauseCircle, TrendingUp } from 'lucide-react';
+import { Shield, Users, Search, MoreVertical, CheckCircle, XCircle, PauseCircle, TrendingUp, Clock } from 'lucide-react';
 
 export const Admin: React.FC = () => {
   const { campaigns, updateCampaign } = useAppStore();
@@ -74,6 +74,7 @@ export const Admin: React.FC = () => {
                 <th className="px-8 py-4">Campaign</th>
                 <th className="px-8 py-4">Objective / Platform</th>
                 <th className="px-8 py-4">Reach Progress</th>
+                <th className="px-8 py-4">Timeframe</th>
                 <th className="px-8 py-4">Status</th>
                 <th className="px-8 py-4">Actions</th>
               </tr>
@@ -94,10 +95,16 @@ export const Admin: React.FC = () => {
                        <div className="w-32 h-1.5 bg-white/5 rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-cyan-400 shadow-[0_0_8px_rgba(0,242,255,0.4)]" 
-                            style={{ width: `${Math.min((campaign.analytics.views / campaign.targetViews) * 100, 100)}%` }}
+                            style={{ width: `${Math.min((campaign.analytics.views / (campaign.targetViews || 1)) * 100, 100)}%` }}
                           />
                        </div>
-                       <span className="text-xs font-mono">{Math.floor((campaign.analytics.views / campaign.targetViews) * 100)}%</span>
+                       <span className="text-xs font-mono">{Math.floor((campaign.analytics.views / (campaign.targetViews || 1)) * 100)}%</span>
+                    </div>
+                  </td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center space-x-2 text-xs text-gray-400">
+                      <Clock size={14} className="text-purple-400" />
+                      <span className="font-bold">{campaign.durationValue || 'N/A'} {campaign.durationUnit || ''}</span>
                     </div>
                   </td>
                   <td className="px-8 py-6">

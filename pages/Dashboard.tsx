@@ -126,9 +126,14 @@ export const Dashboard: React.FC = () => {
                    <div className="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-cyan-400 shadow-[0_0_8px_rgba(0,242,255,0.6)]" 
-                        style={{ width: `${Math.min((campaign.analytics.views / campaign.targetViews) * 100, 100)}%` }}
+                        style={{ width: `${Math.min((campaign.analytics.views / (campaign.targetViews || 1)) * 100, 100)}%` }}
                       />
                    </div>
+                </div>
+
+                <div className="flex items-center space-x-2 text-[10px] text-gray-400 mb-4 bg-white/5 px-3 py-2 rounded-xl border border-white/5">
+                  <Clock size={12} className="text-purple-400" />
+                  <span className="font-bold uppercase tracking-widest">Timeframe: {campaign.durationValue} {campaign.durationUnit}</span>
                 </div>
 
                 <div className="flex items-center justify-between border-t border-white/5 pt-4">

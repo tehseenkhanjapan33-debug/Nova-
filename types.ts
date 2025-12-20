@@ -39,6 +39,8 @@ export interface Campaign {
   platform: CampaignPlatform;
   mediaUrl: string;
   targetViews: number;
+  durationValue: number;
+  durationUnit: 'Hours' | 'Days';
   mode: CampaignMode;
   targeting: {
     ageRange: string;
